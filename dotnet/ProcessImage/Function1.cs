@@ -11,35 +11,37 @@ using Microsoft.Extensions.Logging;
 
 namespace ProcessImage
 {
-    public class MyPoco
+    public class ImageContent
     {
         public string PartitionKey { get; set; }
         public string RowKey { get; set; }
         public string Text { get; set; }
     }
 
-    public class Function1
+    public class ProcessImage
     {
-        [FunctionName("Function1")]
+        // Azure Function name and output Binding to Table Storage
+        [FunctionName("ProcessImageUpload")]
         [return: Table("ImageText", Connection = "StorageConnection")]
-        public async Task<MyPoco> Run([BlobTrigger("testblobs/{name}", Connection = "StorageConnection")]Stream myBlob, string name, ILogger log)
+        // Trigger binding runs when an image is uploaded to the blob container below
+        public async Task<ImageContent> Run([BlobTrigger("testblobs/{name}", Connection = "StorageConnection")]Stream myBlob, string name, ILogger log)
         {
-            log.LogInformation($"C# Blob trigger function Processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
-
-            string subscriptionKey = "your-subscription-key";
-            string endpoint = "your-service-endpoint";
-
-            string READ_TEXT_URL_IMAGE = $"your-img-url";
+            // Get connection configurations
+            string subscriptionKey = Environment.GetEnvironmentVariable("ComputerVisionKey");
+            string endpoint = Environment.GetEnvironmentVariable("ComputerVisionEndpoint");
+            string imgUrl = $"https://{ Environment.GetEnvironmentVariable("StorageAccountName")}.blob.core.windows.net/imageanalysis/{name}";
 
             ComputerVisionClient client = new ComputerVisionClient(new ApiKeyServiceClientCredentials(subscriptionKey)) { Endpoint = endpoint };
 
-            var textContext = await ReadFileUrl(client, READ_TEXT_URL_IMAGE);
+            // Get the analyzed image contents
+            var textContext = await AnalyzeImageContent(client, imgUrl);
 
-            return new MyPoco { PartitionKey = "Images", RowKey = Guid.NewGuid().ToString(), Text = textContext };
+            return new ImageContent { PartitionKey = "Images", RowKey = Guid.NewGuid().ToString(), Text = textContext };
         }
 
-        static async Task<string> ReadFileUrl(ComputerVisionClient client, string urlFile)
+        static async Task<string> AnalyzeImageContent(ComputerVisionClient client, string urlFile)
         {
+            // Analyze the file using Computer Vision Client
             var textHeaders = await client.ReadAsync(urlFile);
             string operationLocation = textHeaders.OperationLocation;
             Thread.Sleep(2000);
@@ -47,6 +49,7 @@ namespace ProcessImage
             const int numberOfCharsInOperationId = 36;
             string operationId = operationLocation.Substring(operationLocation.Length - numberOfCharsInOperationId);
 
+            // Read back the results from the analysis request
             ReadOperationResult results;
             do
             {
@@ -57,12 +60,12 @@ namespace ProcessImage
 
             var textUrlFileResults = results.AnalyzeResult.ReadResults;
 
+            // Assemble into readable string
             StringBuilder text = new StringBuilder();
             foreach (ReadResult page in textUrlFileResults)
             {
                 foreach (Line line in page.Lines)
                 {
-                    // Console.WriteLine(line.Text);
                     text.AppendLine(line.Text);
                 }
             }

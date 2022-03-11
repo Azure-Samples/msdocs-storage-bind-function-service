@@ -1,8 +1,11 @@
 {
     "IsEncrypted": false,
-  "Values": {
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
-    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-    "StorageConnection": "your-storage-account"
-  }
+    "Values": {
+      "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+      "FUNCTIONS_WORKER_RUNTIME": "dotnet",
+      "StorageConnection": "your-storage-account-connection-string",
+      "StorageAccountName": "your-storage-account-name",
+      "ComputerVisionKey": "your-computer-vision-key",
+      "ComputerVisionEndPoint":  "your-computer-vision-endpoint"
+    }
 }
