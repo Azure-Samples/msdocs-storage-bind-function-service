@@ -1,0 +1,19 @@
+{
+  "bindings": [
+    {
+      "name": "myBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "testblobs/{name}",
+      "connection": "StorageConnection"
+    },
+    {
+      "tableName": "ImageText",
+      "connection": "StorageConnection",
+      "name": "tableBinding",
+      "type": "table",
+      "direction": "out"
+    }
+
+  ]
+}
