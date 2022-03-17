@@ -1,0 +1,12 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "StorageConnection": "your-storage-account-connection-string",
+    "StorageAccountName": "your-storage-account-name",
+    "StorageContainerName": "your-storage-container-name",    
+    "ComputerVisionKey": "your-computer-vision-key",
+    "ComputerVisionEndPoint":  "your-computer-vision-endpoint"    
+  }
+}
