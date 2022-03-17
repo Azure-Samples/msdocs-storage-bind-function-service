@@ -11,13 +11,6 @@ using Microsoft.Extensions.Logging;
 
 namespace ProcessImage
 {
-    public class ImageContent
-    {
-        public string PartitionKey { get; set; }
-        public string RowKey { get; set; }
-        public string Text { get; set; }
-    }
-
     public class ProcessImage
     {
         // Azure Function name and output Binding to Table Storage
@@ -37,6 +30,12 @@ namespace ProcessImage
             var textContext = await AnalyzeImageContent(client, imgUrl);
 
             return new ImageContent { PartitionKey = "Images", RowKey = Guid.NewGuid().ToString(), Text = textContext };
+        }
+        public class ImageContent
+        {
+            public string PartitionKey { get; set; }
+            public string RowKey { get; set; }
+            public string Text { get; set; }
         }
 
         static async Task<string> AnalyzeImageContent(ComputerVisionClient client, string urlFile)
