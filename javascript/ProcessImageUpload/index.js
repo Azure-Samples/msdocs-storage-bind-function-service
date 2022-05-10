@@ -6,7 +6,7 @@ const sleep = require('util').promisify(setTimeout);
 const STATUS_SUCCEEDED = "succeeded";
 const STATUS_FAILED = "failed"
 
-async function readFileUrl(computerVisionClient, url){
+async function AnalyzeImage(computerVisionClient, url){
 
   // To recognize text in a local image, replace client.read() with readTextInStream() as shown:
   let result = await computerVisionClient.read(url);
@@ -44,7 +44,7 @@ module.exports = async function (context, myBlob) {
     const computerVisionClient = new ComputerVisionClient(
         new ApiKeyCredentials({ inHeader: { 'Ocp-Apim-Subscription-Key': computerVision_ResourceKey } }), computerVision_Endpoint);
 
-    const textContext = await readFileUrl(computerVisionClient, context.bindingData.uri);
+    const textContext = await AnalyzeImage(computerVisionClient, context.bindingData.uri);
 
     context.bindings.tableBinding = [];
     context.bindings.tableBinding.push({
