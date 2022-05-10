@@ -1,3 +1,4 @@
+// ProcessImageUpload/index.js
 const { v4: uuidv4 } = require('uuid');
 const { ApiKeyCredentials } = require('@azure/ms-rest-js');
 const { ComputerVisionClient } = require('@azure/cognitiveservices-computervision');
