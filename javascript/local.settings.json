@@ -7,6 +7,6 @@
     "StorageAccountName": "your-storage-account-name",
     "StorageContainerName": "your-storage-container-name",    
     "ComputerVisionKey": "your-computer-vision-key",
-    "ComputerVisionEndPoint":  "your-computer-vision-endpoint"    
+    "ComputerVisionEndPoint":  "https://REPLACE-WITH-YOUR-RESOURCE-NAME.cognitiveservices.azure.com/"    
   }
 }
