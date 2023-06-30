@@ -73,7 +73,7 @@ app.storageBlob('process-blob', {
                 }
             console.log(dataToInsertToDatabase)
             return {
-                dataToInsertToDatabase
+                analysis: dataToInsertToDatabase
             }
         }
 
