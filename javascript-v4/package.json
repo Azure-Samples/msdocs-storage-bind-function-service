@@ -1,0 +1,19 @@
+{
+  "name": "",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start --verbose",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@azure/cognitiveservices-computervision": "^8.2.0",
+    "@azure/functions": "^4.0.0-alpha.1",
+    "@azure/ms-rest-js": "^2.6.6",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.x"
+  }
+}

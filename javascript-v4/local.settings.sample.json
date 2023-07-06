@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
+    "AzureWebJobsStorage": "",
+    "StorageConnection": "STORAGE-CONNECTION-STRING",
+    "StorageAccountName": "STORAGE-ACCOUNT-NAME",
+    "StorageContainerName": "STORAGE-CONTAINER-NAME",
+    "ComputerVisionKey": "COMPUTER-VISION-KEY",
+    "ComputerVisionEndPoint":  "COMPUTER-VISION-ENDPOINT",
+    "CosmosDBConnection": "COSMOS-DB-CONNECTION-STRING"
+  }
+}
