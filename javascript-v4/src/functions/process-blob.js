@@ -7,7 +7,9 @@ const sleep = require('util').promisify(setTimeout);
 const STATUS_SUCCEEDED = "succeeded";
 const STATUS_FAILED = "failed"
 
-async function readFileUrl(url) {
+const imageExtensions = ["jpg", "jpeg", "png", "bmp", "gif", "tiff"];
+
+async function analyzeImage(url) {
 
     try {
 
@@ -21,69 +23,51 @@ async function readFileUrl(url) {
             visualFeatures: ['ImageType', 'Categories', 'Tags', 'Description', 'Objects', 'Adult', 'Faces']
         });
 
-        // // To recognize text in a local image, replace client.read() with readTextInStream() as shown:
-        // let result = await computerVisionClient.read(url);
-
-        // // Operation ID is last path segment of operationLocation (a URL)
-        // let operation = result.operationLocation.split('/').slice(-1)[0];
-
-        // // result.status is initially undefined, since it's the result of read
-        // while (result.status !== STATUS_SUCCEEDED) {
-        //     await sleep(1000);
-        //     result = await computerVisionClient.getReadResult(operation);
-        // }
-
-        // let contents = "";
-
-        // result.analyzeResult.readResults.map((page) => {
-        //     page.lines.map(line => {
-        //         contents += line.text + "\n\r"
-        //     });
-        // });
         return contents;
 
     } catch (err) {
         console.log(err);
     }
 }
-app.storageBlob('process-blob', {
+app.storageBlob('process-blob-image', { 
     path: 'images/{name}',
     connection: 'StorageConnection',
     handler: async (blob, context) => {
 
-        context.log(`Storage blob (Begin) url:${context.triggerMetadata.uri}, size:${blob.length} bytes`);
+        context.log(`Storage blob 'process-blob-image' url:${context.triggerMetadata.uri}, size:${blob.length} bytes`);
 
         const blobUrl = context.triggerMetadata.uri;
+        const extension = blobUrl.split('.').pop();
+
         if(!blobUrl) {
-            console.log(`url is empty`);
+            // url is empty
+            return;
+        } else if (!extension || !imageExtensions.includes(extension.toLowerCase())){
+            // not processing file because it isn't a valid and accepted image extension
             return;
         } else {
-            console.log(`url is found`);
-
+            //url is image
             const id = uuidv4().toString();
-            context.log(`Id = ${id}`)
-
-            context.log(`Image processed (begin)`);
-            const textContext = await readFileUrl(blobUrl);
-            context.log(`Image processed (end)`);
+            const analysis = await analyzeImage(blobUrl);
             
+            // `type` is the partition key 
             const dataToInsertToDatabase = {
                     id,
-                    ...textContext
+                    type: 'image',
+                    blobUrl,
+                    blobSize: blob.length,
+                    ...analysis,
+                    trigger: context.triggerMetadata
                 }
-            console.log(dataToInsertToDatabase)
-            return {
-                analysis: dataToInsertToDatabase
-            }
+
+            return dataToInsertToDatabase;
         }
 
         
     },
     return: output.cosmosDB({
-        connectionStringSetting: 'CosmosDbConnectionString',
-        databaseName:'ToDoList',
-        collectionName:'Items',
-        partitionKey: 'ImageAnalysis'
-
+        connection: 'CosmosDBConnection',
+        databaseName:'StorageTutorial',
+        containerName:'analysis'
     })
 });
