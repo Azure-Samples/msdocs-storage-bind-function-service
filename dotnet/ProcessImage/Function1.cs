@@ -17,7 +17,7 @@ namespace ProcessImage
         [FunctionName("ProcessImageUpload")]
         [return: Table("ImageText", Connection = "StorageConnection")]
         // Trigger binding runs when an image is uploaded to the blob container below
-        public async Task<ImageContent> Run([BlobTrigger("testblobs/{name}", Connection = "StorageConnection")]Stream myBlob, string name, ILogger log)
+        public async Task<ImageContent> Run([BlobTrigger("imageanalysis/{name}", Connection = "StorageConnection")]Stream myBlob, string name, ILogger log)
         {
             // Get connection configurations
             string subscriptionKey = Environment.GetEnvironmentVariable("ComputerVisionKey");
